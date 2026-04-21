@@ -55,7 +55,7 @@ jobs:
         env:
           P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
         run: |
-          make ios mac
+          make ios
           make cleanup
 
       - name: Upload application
@@ -65,7 +65,7 @@ jobs:
           path: ./Build
           retention-days: 3
 
-      # - name: Generate artifact attestation
-      #   uses: actions/attest-build-provenance@v2
-      #   with:
-      #     subject-path: ./Build/synctrain.ipa
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: ./Build/synctrain.ipa
