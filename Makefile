@@ -92,6 +92,22 @@ ios: core provisioning
 		DEVELOPMENT_TEAM=$(TEAM_ID) \
 		CODE_SIGN_STYLE="Manual" \
 		clean archive
+		
+ios-unsigned: core  
+	# Build unsigned .app for TrollStore  
+	xcodebuild -scheme "Synctrain release" \  
+		-configuration Release \  
+		-sdk iphoneos \  
+		-destination generic/platform=iOS \  
+		CODE_SIGN_IDENTITY="" \
+		CODE_SIGNING_REQUIRED=NO \
+		CODE_SIGNING_ALLOWED=NO \
+		ENABLE_BITCODE=NO \
+		clean build  
+	# Create IPA  
+	mkdir -p $(BUILD_DIR)  
+	cp -r "$(shell xcodebuild -project Sushitrain.xcodeproj -scheme "Synctrain release" -configuration Release -sdk iphoneos -showBuildSettings | grep -m 1 "BUILT_PRODUCTS_DIR" | awk '{print $$3}')/Synctrain.app" $(BUILD_DIR)/  
+	cd $(BUILD_DIR) && zip -r synctrain-unsigned.ipa Synctrain.app
 
 cleanup:
 	# Clean up
