@@ -94,7 +94,10 @@ ios: core provisioning
 		clean archive
 		
 ios-unsigned: core  
-	# Build unsigned .app for TrollStore  
+	# Build unsigned .app for TrollStore (skip license generation)  
+	cd SushitrainCore && \
+	gomobile bind -target ios,iossimulator,macos -iosversion=15 -tags noassets -o ./build/SushitrainCore.xcframework ./src  
+	# Build unsigned .app  
 	xcodebuild -scheme "Synctrain release" \  
 		-configuration Release \  
 		-sdk iphoneos \  
@@ -108,7 +111,6 @@ ios-unsigned: core
 	mkdir -p $(BUILD_DIR)  
 	cp -r "$(shell xcodebuild -project Sushitrain.xcodeproj -scheme "Synctrain release" -configuration Release -sdk iphoneos -showBuildSettings | grep -m 1 "BUILT_PRODUCTS_DIR" | awk '{print $$3}')/Synctrain.app" $(BUILD_DIR)/  
 	cd $(BUILD_DIR) && zip -r synctrain-unsigned.ipa Synctrain.app
-
 cleanup:
 	# Clean up
 	-rm $(PROVISIONING_PROFILE_PATH_IOS)
